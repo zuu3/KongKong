@@ -96,7 +96,7 @@ class AssetRepository {
       title: title,
       minPrice: minPrice,
       category: cat,
-      deadline: DateTime.now().add(Duration(hours: 4 + _rand.nextInt(36))),
+      deadline: DateTime.now().add(Duration(minutes: 1 + _rand.nextInt(10))),
     );
   }
 }

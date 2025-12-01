@@ -38,7 +38,7 @@ class ShopItem {
         ),
         const ShopItem(
           type: ItemType.luckyCharm,
-          name: '행운의 참',
+          name: '행운의 부적',
           description: '낙찰 확률을 10% 높입니다',
           price: 50000000,
           emoji: '🍀',
