@@ -52,7 +52,7 @@ class _BidPageState extends ConsumerState<BidPage> {
     if (text.isEmpty) return;
     final amount = int.tryParse(text);
     if (amount == null) return;
-    
+
     final repo = ref.read(assetRepositoryProvider);
     setState(() {
       _bidChance = repo.analyzeBidChance(widget.asset, amount);
@@ -130,9 +130,9 @@ class _BidPageState extends ConsumerState<BidPage> {
           padding: const EdgeInsets.all(16),
           child: Form(
             key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
                 LiquidGlass(
                   padding: const EdgeInsets.all(20),
                   child: Column(
@@ -141,7 +141,10 @@ class _BidPageState extends ConsumerState<BidPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('내 잔액', style: TextStyle(color: Colors.black54, fontWeight: FontWeight.w600)),
+                          const Text(
+                            '내 잔액',
+                            style: TextStyle(color: Colors.black54, fontWeight: FontWeight.w600),
+                          ),
                           if (balanceState is AsyncLoading)
                             const SizedBox(
                               width: 18,
@@ -151,7 +154,11 @@ class _BidPageState extends ConsumerState<BidPage> {
                           else
                             Text(
                               '${f.format(balance)}원',
-                              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black87,
+                              ),
                             ),
                         ],
                       ),
@@ -195,7 +202,11 @@ class _BidPageState extends ConsumerState<BidPage> {
                                 const SizedBox(height: 6),
                                 Text(
                                   widget.asset.title,
-                                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black87,
+                                  ),
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
                                 ),
@@ -210,7 +221,11 @@ class _BidPageState extends ConsumerState<BidPage> {
                         children: [
                           const Text(
                             '최저입찰가',
-                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black54),
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.black54,
+                            ),
                           ),
                           Text(
                             '${f.format(widget.asset.minPrice)}원',
@@ -247,16 +262,35 @@ class _BidPageState extends ConsumerState<BidPage> {
                 ),
                 const SizedBox(height: 24),
 
-                // Luck Boost Indicator
+                // Luck Boost Indicator (화려한 버전)
                 if (_luckBoost > 0)
-                  Container(
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 500),
                     padding: const EdgeInsets.all(12),
                     margin: const EdgeInsets.only(bottom: 16),
                     decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFF4CAF50), Color(0xFF8BC34A)],
+                      gradient: LinearGradient(
+                        colors: [
+                          const Color(0xFF4CAF50),
+                          const Color(0xFF8BC34A),
+                          Colors.amber.shade400,
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
                       ),
                       borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.green.withOpacity(0.4),
+                          blurRadius: 15,
+                          spreadRadius: 2,
+                        ),
+                        BoxShadow(
+                          color: Colors.amber.withOpacity(0.3),
+                          blurRadius: 20,
+                          spreadRadius: 3,
+                        ),
+                      ],
                     ),
                     child: Row(
                       children: [
@@ -266,9 +300,19 @@ class _BidPageState extends ConsumerState<BidPage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text(
-                                '행운의 참 활성화!',
-                                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+                              const Row(
+                                children: [
+                                  Text(
+                                    '행운의 참 활성화!',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  SizedBox(width: 4),
+                                  Text('✨', style: TextStyle(fontSize: 14)),
+                                ],
                               ),
                               Text(
                                 '낙찰 확률 +${(_luckBoost * 100).toInt()}% 증가',
@@ -303,10 +347,14 @@ class _BidPageState extends ConsumerState<BidPage> {
                             children: [
                               const Text(
                                 '가격 동결 활성화!',
-                                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
                               ),
                               Text(
-                                'AI 입찰가 20% 감소',
+                                '경쟁자 입찰가 20% 감소',
                                 style: const TextStyle(color: Colors.white70, fontSize: 14),
                               ),
                             ],
@@ -319,13 +367,21 @@ class _BidPageState extends ConsumerState<BidPage> {
 
                 const Text(
                   '입찰 금액을 입력하세요',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
                   controller: _ctrl,
                   keyboardType: TextInputType.number,
-                  style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black87),
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
                   onChanged: (_) => _updateBidChance(),
                   decoration: InputDecoration(
                     labelText: '입찰 금액',
@@ -363,7 +419,7 @@ class _BidPageState extends ConsumerState<BidPage> {
                         Icon(Icons.psychology, color: _getBidChanceColor()),
                         const SizedBox(width: 8),
                         const Text(
-                          'AI 분석 낙찰 확률: ',
+                          '예상 낙찰 확률: ',
                           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black87),
                         ),
                         Text(
@@ -387,10 +443,8 @@ class _BidPageState extends ConsumerState<BidPage> {
                     TextButton.icon(
                       onPressed: _updateRecommendation,
                       icon: const Icon(Icons.auto_awesome, size: 16),
-                      label: const Text('AI 추천'),
-                      style: TextButton.styleFrom(
-                        foregroundColor: Colors.black87,
-                      ),
+                      label: const Text('추천 입찰가'),
+                      style: TextButton.styleFrom(foregroundColor: Colors.black87),
                     ),
                   ],
                 ),
@@ -443,10 +497,7 @@ class _BidPageState extends ConsumerState<BidPage> {
                         ? const SizedBox(
                             width: 24,
                             height: 24,
-                            child: CircularProgressIndicator(
-                              color: Colors.white,
-                              strokeWidth: 3,
-                            ),
+                            child: CircularProgressIndicator(color: Colors.white, strokeWidth: 3),
                           )
                         : const Icon(Icons.gavel, size: 28),
                     label: Text(
@@ -489,9 +540,15 @@ class _BidPageState extends ConsumerState<BidPage> {
                               // 낙찰 시에만 실제 비용 차감
                               if (result['isWin'] as bool) {
                                 await ref.read(walletProvider.notifier).spend(amount);
-                                await ref.read(assetRepositoryProvider).removeAsset(widget.asset.id);
-                                // 낙찰 성공 시 XP 보상 (100 XP)
+                                await ref
+                                    .read(assetRepositoryProvider)
+                                    .removeAsset(widget.asset.id);
+                                // 낙찰 성공 시 XP 보상 (100 XP) 및 승리 기록
                                 await ref.read(userStatsProvider.notifier).gainXp(100);
+                                await ref.read(userStatsProvider.notifier).recordWin();
+                              } else {
+                                // 패찰 기록
+                                await ref.read(userStatsProvider.notifier).recordLoss();
                               }
 
                               if (!mounted) return;
@@ -560,7 +617,7 @@ class _BidPageState extends ConsumerState<BidPage> {
         builder: (context, ref, _) {
           final inventory = ref.watch(inventoryProvider);
           final items = ShopItem.allItems;
-          
+
           return Container(
             decoration: const BoxDecoration(
               color: Colors.white,
@@ -592,37 +649,43 @@ class _BidPageState extends ConsumerState<BidPage> {
                     child: ListView.separated(
                       shrinkWrap: true,
                       itemCount: items.length,
-                    separatorBuilder: (_, __) => const Divider(),
-                    itemBuilder: (context, i) {
-                      final item = items[i];
-                      final count = inventory[item.type] ?? 0;
-                      if (count == 0) return const SizedBox.shrink();
-                      
-                      return ListTile(
-                        leading: Text(item.emoji, style: const TextStyle(fontSize: 32)),
-                        title: Text(item.name),
-                        subtitle: Text(item.description),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                              decoration: BoxDecoration(
-                                color: Colors.black87,
-                                borderRadius: BorderRadius.circular(8),
+                      separatorBuilder: (_, __) => const Divider(),
+                      itemBuilder: (context, i) {
+                        final item = items[i];
+                        final count = inventory[item.type] ?? 0;
+                        if (count == 0) return const SizedBox.shrink();
+
+                        return ListTile(
+                          leading: Text(item.emoji, style: const TextStyle(fontSize: 32)),
+                          title: Text(item.name),
+                          subtitle: Text(item.description),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                decoration: BoxDecoration(
+                                  color: Colors.black87,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Text(
+                                  'x$count',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ),
-                              child: Text('x$count', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                            ),
-                            const SizedBox(width: 8),
-                            FilledButton(
-                              onPressed: () => _useItem(item),
-                              child: const Text('사용'),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
+                              const SizedBox(width: 8),
+                              FilledButton(
+                                onPressed: () => _useItem(item),
+                                child: const Text('사용'),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
                   ),
               ],
             ),
@@ -638,7 +701,7 @@ class _BidPageState extends ConsumerState<BidPage> {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('아이템이 없습니다')));
       return;
     }
-    
+
     if (!mounted) return;
     Navigator.pop(context); // Close inventory
 
@@ -655,20 +718,22 @@ class _BidPageState extends ConsumerState<BidPage> {
           ),
         );
         break;
-        
+
       case ItemType.timeFreezer:
         if (!_isTimerActive) {
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('이미 종료된 경매입니다')));
           return;
         }
         _timer?.cancel();
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${item.emoji} 10초간 시간이 멈춥니다!')));
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('${item.emoji} 10초간 시간이 멈춥니다!')));
         await Future.delayed(const Duration(seconds: 10));
         if (mounted && _countdown > 0) {
           _startTimer();
         }
         break;
-        
+
       case ItemType.luckyCharm:
         setState(() {
           _luckBoost = 0.1; // 10% 확률 증가
@@ -676,7 +741,7 @@ class _BidPageState extends ConsumerState<BidPage> {
         // 화려한 이펙트
         _showLuckyCharmEffect();
         break;
-        
+
       case ItemType.priceFreeze:
         setState(() {
           _priceFreeze = true;
@@ -689,7 +754,7 @@ class _BidPageState extends ConsumerState<BidPage> {
           ),
         );
         break;
-        
+
       case ItemType.secondChance:
         setState(() {
           _hasSecondChance = true;
@@ -712,7 +777,7 @@ class _BidPageState extends ConsumerState<BidPage> {
       barrierDismissible: false,
       builder: (context) => const LuckyCharmDialog(),
     );
-    
+
     // 2초 후 자동으로 닫기
     Future.delayed(const Duration(milliseconds: 2000), () {
       if (mounted && Navigator.canPop(context)) {

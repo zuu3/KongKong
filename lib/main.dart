@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:google_fonts/google_fonts.dart';
 import 'ui/bid_page.dart';
 import 'ui/result_page.dart';
 import 'models/asset.dart';
@@ -20,6 +22,14 @@ class GongmaeApp extends StatelessWidget {
       title: '공매의 정석',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        // 웹에서는 시스템 폰트 사용, 모바일에서는 Google Fonts 사용
+        textTheme: kIsWeb
+            ? ThemeData.light().textTheme.apply(
+                fontFamily:
+                    '-apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", sans-serif',
+              )
+            : GoogleFonts.notoSansKrTextTheme(),
+        fontFamily: kIsWeb ? null : GoogleFonts.notoSansKr().fontFamily,
         colorScheme: ColorScheme.fromSeed(
           seedColor: const Color(0xFF0066CC),
           secondary: const Color(0xFF00B4D8),

@@ -107,7 +107,7 @@ class _ResultPageState extends State<ResultPage> with SingleTickerProviderStateM
 
                   // 결과 텍스트
                   Text(
-                    widget.isWin ? '🎉 축하합니다! 🎉' : '😢 아쉽네요',
+                    widget.isWin ? '🎉 대박났어요! 🎉' : '😭 돈 아까워...',
                     style: const TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
@@ -116,7 +116,7 @@ class _ResultPageState extends State<ResultPage> with SingleTickerProviderStateM
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    widget.isWin ? '낙찰 성공!' : '유찰',
+                    widget.isWin ? '낙찰 성공! 🤑' : '유찰... 💸',
                     style: const TextStyle(
                       fontSize: 48,
                       fontWeight: FontWeight.bold,
@@ -133,7 +133,11 @@ class _ResultPageState extends State<ResultPage> with SingleTickerProviderStateM
                       children: [
                         Text(
                           widget.assetTitle,
-                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
                           textAlign: TextAlign.center,
                         ),
                         const Divider(height: 32, color: Colors.white24),
@@ -178,7 +182,7 @@ class _ResultPageState extends State<ResultPage> with SingleTickerProviderStateM
                                 const SizedBox(width: 8),
                                 Expanded(
                                   child: Text(
-                                    '${f.format(widget.winningBid - widget.userBid)}원 더 높게 입찰했다면 낙찰!',
+                                    '아깝다! ${f.format(widget.winningBid - widget.userBid)}원만 더 썼으면 내거였는데... 😤',
                                     style: TextStyle(
                                       color: Colors.orange.shade100,
                                       fontWeight: FontWeight.bold,
@@ -203,14 +207,15 @@ class _ResultPageState extends State<ResultPage> with SingleTickerProviderStateM
                       children: [
                         Row(
                           children: const [
-                            Icon(
-                              Icons.format_list_numbered,
-                              color: Colors.white,
-                            ),
+                            Icon(Icons.format_list_numbered, color: Colors.white),
                             SizedBox(width: 8),
                             Text(
                               '전체 입찰 현황',
-                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
                             ),
                           ],
                         ),
@@ -228,15 +233,15 @@ class _ResultPageState extends State<ResultPage> with SingleTickerProviderStateM
                               color: isUser
                                   ? Colors.blue.withValues(alpha: 0.1)
                                   : isWinner
-                                      ? Colors.amber.withValues(alpha: 0.1)
-                                      : Colors.white.withValues(alpha: 0.06),
+                                  ? Colors.amber.withValues(alpha: 0.1)
+                                  : Colors.white.withValues(alpha: 0.06),
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(
                                 color: isUser
                                     ? Colors.blue
                                     : isWinner
-                                        ? Colors.amber
-                                        : Colors.transparent,
+                                    ? Colors.amber
+                                    : Colors.transparent,
                                 width: isUser || isWinner ? 2 : 0,
                               ),
                             ),
@@ -246,7 +251,9 @@ class _ResultPageState extends State<ResultPage> with SingleTickerProviderStateM
                                   width: 32,
                                   height: 32,
                                   decoration: BoxDecoration(
-                                    color: isWinner ? Colors.amber : Colors.white.withValues(alpha: 0.3),
+                                    color: isWinner
+                                        ? Colors.amber
+                                        : Colors.white.withValues(alpha: 0.3),
                                     shape: BoxShape.circle,
                                   ),
                                   child: Center(
@@ -275,11 +282,7 @@ class _ResultPageState extends State<ResultPage> with SingleTickerProviderStateM
                                           ),
                                           if (isUser) ...[
                                             const SizedBox(width: 4),
-                                            const Icon(
-                                              Icons.person,
-                                              size: 16,
-                                              color: Colors.blue,
-                                            ),
+                                            const Icon(Icons.person, size: 16, color: Colors.blue),
                                           ],
                                           if (isWinner) ...[
                                             const SizedBox(width: 4),
@@ -328,7 +331,14 @@ class _ResultPageState extends State<ResultPage> with SingleTickerProviderStateM
                             children: const [
                               Icon(Icons.groups, color: Colors.white),
                               SizedBox(width: 8),
-                              Text('AI 전략 분포', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+                              Text(
+                                '경쟁자 전략 분포',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
                             ],
                           ),
                           const SizedBox(height: 8),
@@ -358,7 +368,14 @@ class _ResultPageState extends State<ResultPage> with SingleTickerProviderStateM
                             children: const [
                               Icon(Icons.history, color: Colors.white),
                               SizedBox(width: 8),
-                              Text('실시간 입찰 로그', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+                              Text(
+                                '실시간 입찰 로그',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
                             ],
                           ),
                           const SizedBox(height: 12),
@@ -379,12 +396,18 @@ class _ResultPageState extends State<ResultPage> with SingleTickerProviderStateM
                                   Expanded(
                                     child: Text(
                                       '${DateFormat('HH:mm:ss').format(bid.bidTime)} - ${bid.bidderName}',
-                                      style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   ),
                                   Text(
                                     '${f.format(bid.bidAmount)}원',
-                                    style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -412,7 +435,7 @@ class _ResultPageState extends State<ResultPage> with SingleTickerProviderStateM
                     ),
                   ),
                   const SizedBox(height: 12),
-                  
+
                   // 재도전 버튼 (유찰 + 재도전권 보유 시)
                   if (!widget.isWin && widget.hasSecondChance && widget.asset != null) ...[
                     SizedBox(
@@ -421,9 +444,7 @@ class _ResultPageState extends State<ResultPage> with SingleTickerProviderStateM
                       child: FilledButton.icon(
                         onPressed: () {
                           Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(
-                              builder: (_) => BidPage(asset: widget.asset!),
-                            ),
+                            MaterialPageRoute(builder: (_) => BidPage(asset: widget.asset!)),
                           );
                         },
                         icon: const Icon(Icons.replay),

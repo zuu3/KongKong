@@ -40,12 +40,18 @@ class UserStatsNotifier extends StateNotifier<UserStats> {
       leveledUp = true;
     }
 
-    state = state.copyWith(
-      level: newLevel,
-      currentXp: newXp,
-      requiredXp: newRequiredXp,
-    );
+    state = state.copyWith(level: newLevel, currentXp: newXp, requiredXp: newRequiredXp);
     await _saveStats();
     return leveledUp;
+  }
+
+  Future<void> recordWin() async {
+    state = state.copyWith(totalBids: state.totalBids + 1, wins: state.wins + 1);
+    await _saveStats();
+  }
+
+  Future<void> recordLoss() async {
+    state = state.copyWith(totalBids: state.totalBids + 1);
+    await _saveStats();
   }
 }

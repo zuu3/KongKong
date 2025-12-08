@@ -11,7 +11,7 @@ import '../models/asset.dart';
 class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._init();
   static Database? _database;
-  
+
   // Web Storage Cache
   List<Map<String, dynamic>> _webBids = [];
   List<Map<String, dynamic>> _webOwnedAssets = [];
@@ -32,11 +32,13 @@ class DatabaseHelper {
     final dbPath = await getApplicationDocumentsDirectory();
     final path = join(dbPath.path, filePath);
 
-    return await openDatabase(
-      path,
-      version: 1,
-      onCreate: _createDB,
-    );
+    return await openDatabase(path, version: 2, onCreate: _createDB, onUpgrade: _upgradeDB);
+  }
+
+  Future<void> _upgradeDB(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 2) {
+      await db.execute('ALTER TABLE bids ADD COLUMN result TEXT');
+    }
   }
 
   Future<void> _createDB(Database db, int version) async {
@@ -48,7 +50,8 @@ class DatabaseHelper {
         bidder_name TEXT NOT NULL,
         bid_amount INTEGER NOT NULL,
         bid_time TEXT NOT NULL,
-        is_user INTEGER NOT NULL
+        is_user INTEGER NOT NULL,
+        result TEXT
       )
     ''');
 
@@ -70,17 +73,17 @@ class DatabaseHelper {
   Future<void> _ensureWebLoaded() async {
     if (!_webLoaded) {
       final prefs = await SharedPreferences.getInstance();
-      
+
       final bidsJson = prefs.getString('db_bids');
       if (bidsJson != null) {
         _webBids = List<Map<String, dynamic>>.from(jsonDecode(bidsJson));
       }
-      
+
       final assetsJson = prefs.getString('db_owned_assets');
       if (assetsJson != null) {
         _webOwnedAssets = List<Map<String, dynamic>>.from(jsonDecode(assetsJson));
       }
-      
+
       _webLoaded = true;
     }
   }
@@ -105,6 +108,7 @@ class DatabaseHelper {
       'bid_amount': bid.bidAmount,
       'bid_time': bid.bidTime.toIso8601String(),
       'is_user': bid.isUser ? 1 : 0,
+      'result': bid.result,
     };
 
     if (kIsWeb) {
@@ -136,15 +140,20 @@ class DatabaseHelper {
       result = await db.query('bids', orderBy: 'bid_time DESC');
     }
 
-    return result.map((json) => Bid(
-      id: json['id'] as int,
-      assetId: json['asset_id'] as int,
-      assetTitle: json['asset_title'] as String,
-      bidderName: json['bidder_name'] as String,
-      bidAmount: json['bid_amount'] as int,
-      bidTime: DateTime.parse(json['bid_time'] as String),
-      isUser: (json['is_user'] as int) == 1,
-    )).toList();
+    return result
+        .map(
+          (json) => Bid(
+            id: json['id'] as int,
+            assetId: json['asset_id'] as int,
+            assetTitle: json['asset_title'] as String,
+            bidderName: json['bidder_name'] as String,
+            bidAmount: json['bid_amount'] as int,
+            bidTime: DateTime.parse(json['bid_time'] as String),
+            isUser: (json['is_user'] as int) == 1,
+            result: json['result'] as String?,
+          ),
+        )
+        .toList();
   }
 
   Future<List<Bid>> fetchUserBids() async {
@@ -162,16 +171,21 @@ class DatabaseHelper {
         orderBy: 'bid_time DESC',
       );
     }
-    
-    return result.map((json) => Bid(
-      id: json['id'] as int,
-      assetId: json['asset_id'] as int,
-      assetTitle: json['asset_title'] as String,
-      bidderName: json['bidder_name'] as String,
-      bidAmount: json['bid_amount'] as int,
-      bidTime: DateTime.parse(json['bid_time'] as String),
-      isUser: (json['is_user'] as int) == 1,
-    )).toList();
+
+    return result
+        .map(
+          (json) => Bid(
+            id: json['id'] as int,
+            assetId: json['asset_id'] as int,
+            assetTitle: json['asset_title'] as String,
+            bidderName: json['bidder_name'] as String,
+            bidAmount: json['bid_amount'] as int,
+            bidTime: DateTime.parse(json['bid_time'] as String),
+            isUser: (json['is_user'] as int) == 1,
+            result: json['result'] as String?,
+          ),
+        )
+        .toList();
   }
 
   Future<void> clearBids() async {
@@ -197,11 +211,7 @@ class DatabaseHelper {
       return 0;
     } else {
       final db = await database;
-      return await db.delete(
-        'bids',
-        where: 'id = ?',
-        whereArgs: [id],
-      );
+      return await db.delete('bids', where: 'id = ?', whereArgs: [id]);
     }
   }
 
@@ -246,17 +256,23 @@ class DatabaseHelper {
       result = await db.query('owned_assets', orderBy: 'acquired_at DESC');
     }
 
-    return result.map((json) => OwnedAsset(
-      asset: Asset(
-        id: json['asset_id'] as int,
-        title: json['title'] as String,
-        minPrice: json['min_price'] as int,
-        category: json['category'] as String,
-        deadline: json['deadline'] != null ? DateTime.parse(json['deadline'] as String) : null,
-      ),
-      winningBid: json['winning_bid'] as int,
-      acquiredAt: DateTime.parse(json['acquired_at'] as String),
-    )).toList();
+    return result
+        .map(
+          (json) => OwnedAsset(
+            asset: Asset(
+              id: json['asset_id'] as int,
+              title: json['title'] as String,
+              minPrice: json['min_price'] as int,
+              category: json['category'] as String,
+              deadline: json['deadline'] != null
+                  ? DateTime.parse(json['deadline'] as String)
+                  : null,
+            ),
+            winningBid: json['winning_bid'] as int,
+            acquiredAt: DateTime.parse(json['acquired_at'] as String),
+          ),
+        )
+        .toList();
   }
 
   Future<void> deleteOwnedAsset(int assetId) async {
@@ -266,11 +282,7 @@ class DatabaseHelper {
       await _saveWebAssets();
     } else {
       final db = await database;
-      await db.delete(
-        'owned_assets',
-        where: 'asset_id = ?',
-        whereArgs: [assetId],
-      );
+      await db.delete('owned_assets', where: 'asset_id = ?', whereArgs: [assetId]);
     }
   }
 }

@@ -9,10 +9,26 @@ class BidRepository {
 
   // AI 입찰자 이름 목록
   static final List<String> _aiBidders = [
-    '김철수', '이영희', '박민수', '최지원', '정수진',
-    '강동원', '윤서연', '임하늘', '송민호', '한지민',
-    '조성훈', '권나라', '신동엽', '배수지', '오정세',
-    '문채원', '서인국', '안보현', '김다미', '남주혁',
+    '김철수',
+    '이영희',
+    '박민수',
+    '최지원',
+    '정수진',
+    '강동원',
+    '윤서연',
+    '임하늘',
+    '송민호',
+    '한지민',
+    '조성훈',
+    '권나라',
+    '신동엽',
+    '배수지',
+    '오정세',
+    '문채원',
+    '서인국',
+    '안보현',
+    '김다미',
+    '남주혁',
   ];
 
   /// 실제 공매 방식: 여러 사람이 입찰하고, 가장 높은 가격을 제시한 사람이 낙찰
@@ -36,12 +52,7 @@ class BidRepository {
     // 처리 중 시뮬레이션 (1~2초)
     await Future.delayed(Duration(milliseconds: 1000 + rand.nextInt(1000)));
 
-    final Map<String, int> aiStrategyCount = {
-      '보수적': 0,
-      '일반': 0,
-      '공격적': 0,
-      '초공격': 0,
-    };
+    final Map<String, int> aiStrategyCount = {'보수적': 0, '일반': 0, '공격적': 0, '초공격': 0};
 
     // 사용자 입찰 생성
     final userBid = Bid(
@@ -83,7 +94,7 @@ class BidRepository {
         bidRate = 1.25 + rand.nextDouble() * 0.15;
         strategyLabel = '초공격';
       }
-      
+
       if (priceFreeze) {
         bidRate *= 0.8;
       }
@@ -103,28 +114,31 @@ class BidRepository {
       allBids.add(aiBid);
     }
 
-    // DB에 저장 (사용자 입찰 및 AI 입찰 모두 저장)
-    for (final bid in allBids) {
-      await _dbHelper.insertBid(bid);
-    }
-
     // 낙찰자 결정 로직
     final scores = <Bid, double>{};
     double calcScore(Bid bid) {
       final ratio = bid.bidAmount / asset.minPrice;
       double factor;
-      if (ratio > 10.0) factor = 0.05;
-      else if (ratio > 6.0) factor = 0.15;
-      else if (ratio > 3.5) factor = 0.35;
-      else if (ratio > 3.0) factor = 0.6;
-      else if (ratio > 2.5) factor = 0.78;
-      else if (ratio > 1.8) factor = 0.9;
-      else if (ratio > 1.3) factor = 0.96;
-      else factor = 1.0;
-      
+      if (ratio > 10.0)
+        factor = 0.05;
+      else if (ratio > 6.0)
+        factor = 0.15;
+      else if (ratio > 3.5)
+        factor = 0.35;
+      else if (ratio > 3.0)
+        factor = 0.6;
+      else if (ratio > 2.5)
+        factor = 0.78;
+      else if (ratio > 1.8)
+        factor = 0.9;
+      else if (ratio > 1.3)
+        factor = 0.96;
+      else
+        factor = 1.0;
+
       final jitter = 0.94 + rand.nextDouble() * 0.12;
       double score = bid.bidAmount * factor * jitter;
-      
+
       if (bid.isUser && luckBoost > 0) {
         score *= (1.0 + luckBoost);
       }
@@ -141,6 +155,16 @@ class BidRepository {
     final winner = allBids.first;
     final isWin = winner.isUser;
     final userRank = allBids.indexWhere((b) => b.isUser) + 1;
+
+    // DB에 저장 (결과 반영하여 저장)
+    for (final bid in allBids) {
+      // 낙찰 여부 설정
+      final result = (bid == winner) ? '낙찰' : '유찰';
+      final bidWithResult = bid.copyWith(result: result);
+
+      // 사용자 입찰만 저장하거나, 전체 저장 후 쿼리에서 필터링 (여기선 전체 저장)
+      await _dbHelper.insertBid(bidWithResult);
+    }
 
     return {
       'isWin': isWin,

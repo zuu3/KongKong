@@ -34,7 +34,7 @@ class AssetRepository {
     _ensureStock();
   }
 
-  /// AI가 추천하는 입찰가 계산
+  /// 추천 입찰가 계산
   int getRecommendedBid(Asset asset) {
     final rand = Random();
     // 최저가의 90~110% 사이를 추천
@@ -42,7 +42,7 @@ class AssetRepository {
     return (asset.minPrice * recommendedRate).round();
   }
 
-  /// 낙찰 예상 확률 계산 (간단한 AI 분석)
+  /// 낙찰 예상 확률 계산
   String analyzeBidChance(Asset asset, int bidAmount) {
     final rate = bidAmount / asset.minPrice;
 
@@ -75,18 +75,36 @@ class AssetRepository {
     switch (cat) {
       case '부동산':
         const addresses = ['서울 강남구', '부산 해운대구', '인천 연수구', '대구 수성구', '경기 판교'];
-        const types = ['오피스텔', '상가', '토지', '주택', '빌라'];
+        const types = [
+          '오피스텔 (귀신 안나옴)',
+          '상가 (옆집과 사이 안좋음)',
+          '토지 (잡초 무성)',
+          '주택 (벽지 아주 독특함)',
+          '빌라 (계단 숨참)',
+        ];
         title =
             '${addresses[_rand.nextInt(addresses.length)]} ${types[_rand.nextInt(types.length)]} ${100 + _rand.nextInt(900)}호';
         minPrice = 300000000 + _rand.nextInt(600000000);
         break;
       case '차량':
-        const models = ['테슬라 모델3', 'BMW 520d', '벤츠 E300', '쏘렌토 하이브리드', '그랜저 IG'];
+        const models = [
+          '테슬라 모델3 (충전기 없음)',
+          'BMW 520d (브레이크 있음)',
+          '벤츠 E300 (에어컨 가끔 작동)',
+          '쏘렌토 하이브리드 (진짜임)',
+          '그랜저 IG (애증의)',
+        ];
         title = '압류 차량 - ${models[_rand.nextInt(models.length)]} ${2018 + _rand.nextInt(6)}년식';
         minPrice = 20000000 + _rand.nextInt(30000000);
         break;
       default:
-        const items = ['사무가구 일괄', '카메라 장비 세트', '공작기계 2대', '농기계 패키지', '노트북 20대'];
+        const items = [
+          '사무가구 일괄 (의자 하나 삐걱)',
+          '카메라 장비 세트 (아재 감성)',
+          '공작기계 2대 (작동법 모름)',
+          '농기계 패키지 (녹슬었지만 멋짐)',
+          '노트북 20대 (윈도우XP 장착)',
+        ];
         title = items[_rand.nextInt(items.length)];
         minPrice = 5000000 + _rand.nextInt(20000000);
     }

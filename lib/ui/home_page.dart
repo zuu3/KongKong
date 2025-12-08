@@ -21,7 +21,8 @@ class HomePage extends StatelessWidget {
                   TweenAnimationBuilder(
                     tween: Tween<double>(begin: 0, end: 1),
                     duration: const Duration(milliseconds: 800),
-                    builder: (context, double value, child) => Transform.scale(scale: value, child: child),
+                    builder: (context, double value, child) =>
+                        Transform.scale(scale: value, child: child),
                     child: Container(
                       padding: const EdgeInsets.all(24),
                       decoration: BoxDecoration(
@@ -55,7 +56,7 @@ class HomePage extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   const Text(
-                    '공매를 쉽고 세련되게 경험하세요',
+                    '압류물도 주인을 찾아갑니다 🏡',
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 16, color: Colors.black54, height: 1.5),
                   ),
@@ -131,10 +132,7 @@ class _GlassButton extends StatelessWidget {
               const SizedBox(width: 8),
               Text(
                 label,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
               ),
             ],
           ),
@@ -158,13 +156,7 @@ class _BlurBall extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: color,
-        boxShadow: [
-          BoxShadow(
-            color: color,
-            blurRadius: 120,
-            spreadRadius: 40,
-          ),
-        ],
+        boxShadow: [BoxShadow(color: color, blurRadius: 120, spreadRadius: 40)],
       ),
     );
   }
